@@ -57,6 +57,11 @@
                         >
                     </li>
                 {/if}
+                <li class="nav-item">
+                    <a use:link class="nav-link" href="/chatbot"
+                        ><strong>AI에게 물어보기</strong></a
+                    >
+                </li>
             </ul>
         </div>
     </div>
