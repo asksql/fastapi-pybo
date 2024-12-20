@@ -6,11 +6,16 @@ from starlette.config import Config
 
 config = Config('.env')
 SQLALCHEMY_DATABASE_URL = config('SQLALCHEMY_DATABASE_URL')
+SQLALCHEMY_DATABASE_ASYNC_URL = config('SQLALCHEMY_DATABASE_ASYNC_URL')
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-async_engine = create_async_engine('sqlite+aiosqlite:///./myapi.db')
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+async_engine = create_async_engine(SQLALCHEMY_DATABASE_ASYNC_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
