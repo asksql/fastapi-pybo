@@ -36,3 +36,5 @@ app.mount("/assets", StaticFiles(directory="frontend/dist/assets"))
 @app.get("/")
 def index():
     return FileResponse("frontend/dist/index.html")
+
+# test
