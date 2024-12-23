@@ -6,6 +6,8 @@ from starlette.staticfiles import StaticFiles
 from domain.question import question_router
 from domain.answer import answer_router
 from domain.user import user_router
+from domain.chat import chat_router
+from domain.doc import document_router
 
 app = FastAPI()
 
@@ -30,6 +32,8 @@ def hello():
 app.include_router(question_router.router)
 app.include_router(answer_router.router)
 app.include_router(user_router.router)
+app.include_router(chat_router.router)
+app.include_router(document_router.router)
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"))
 
 

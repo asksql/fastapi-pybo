@@ -57,3 +57,14 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+
+
+class Document(Base):
+    __tablename__ = "document"
+
+    id = Column(Integer, primary_key=True)
+    file_path = Column(String, unique=True, nullable=False)
+    embedding_file = Column(String, unique=True, nullable=False)
+    index_file = Column(String, unique=True, nullable=False)
+    unique_id = Column(String, unique=True, nullable=False)
+    create_date = Column(DateTime, nullable=False)

@@ -1,41 +1,67 @@
 <script>
     import { writable } from "svelte/store";
+    import fastapi from "../lib/api";
 
     let userMessage = "";
     let chatLog = writable([]);
 
     const sendMessage = async () => {
         if (userMessage.trim()) {
-            chatLog.update((log) => [
-                ...log,
-                { sender: "user", message: userMessage },
-            ]);
-            const response = await fetch("http://localhost:8000/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ message: userMessage }),
-            });
+            let userMessageObj = { sender: "user", message: userMessage };
+            chatLog.update((log) => [...log, userMessageObj]);
 
-            if (response.ok) {
-                const data = await response.json();
-                chatLog.update((log) => [
-                    ...log,
-                    { sender: "bot", message: data.reply },
-                ]);
-            } else {
-                chatLog.update((log) => [
-                    ...log,
-                    {
-                        sender: "bot",
-                        message: "Error: Unable to fetch response",
-                    },
-                ]);
-            }
+            // FastAPI 호출
+            fastapi(
+                "post",
+                "/api/chat/req",
+                { sender: "user", message: userMessage },
+                (json) => {
+                    typeMessage(json.reply);
+                },
+                (err_json) => {
+                    chatLog.update((log) => [
+                        ...log,
+                        {
+                            sender: "bot",
+                            message: "Error: Unable to fetch response",
+                        },
+                    ]);
+                }
+            );
 
             userMessage = "";
         }
+    };
+
+    // 타이핑 효과를 추가하는 함수
+    const typeMessage = (fullMessage) => {
+        let currentMessage = "";
+        let index = 0;
+
+        const typeInterval = setInterval(() => {
+            if (index < fullMessage.length) {
+                currentMessage += fullMessage[index];
+                index++;
+
+                // 업데이트된 메시지를 반영
+                chatLog.update((log) => {
+                    // 마지막 메시지가 "bot"인지 확인
+                    const updatedLog = [...log];
+                    if (updatedLog[updatedLog.length - 1]?.sender === "bot") {
+                        updatedLog[updatedLog.length - 1].message =
+                            currentMessage;
+                    } else {
+                        updatedLog.push({
+                            sender: "bot",
+                            message: currentMessage,
+                        });
+                    }
+                    return updatedLog;
+                });
+            } else {
+                clearInterval(typeInterval); // 타이핑 완료 후 정리
+            }
+        }, 50); // 각 글자 타이핑 속도 (50ms)
     };
 </script>
 
@@ -62,6 +88,7 @@
 </div>
 
 <style>
+    /* 기존 스타일 유지 */
     .chat-container {
         width: 100%;
         max-width: 600px;
