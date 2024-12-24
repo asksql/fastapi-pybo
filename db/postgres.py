@@ -2,20 +2,14 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from starlette.config import Config
+from settings import get_settings
 
-config = Config('.env')
-SQLALCHEMY_DATABASE_URL = config('SQLALCHEMY_DATABASE_URL')
-SQLALCHEMY_DATABASE_ASYNC_URL = config('SQLALCHEMY_DATABASE_ASYNC_URL')
+settings = get_settings()
+SQLALCHEMY_DATABASE_URL = settings.SQLALCHEMY_DATABASE_URL
 
-if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-    )
-else:
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-async_engine = create_async_engine(SQLALCHEMY_DATABASE_ASYNC_URL)
+engine = create_engine("postgresql://"+SQLALCHEMY_DATABASE_URL)
+async_engine = create_async_engine(
+    "postgresql+asyncpg://"+SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

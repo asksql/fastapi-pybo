@@ -3,7 +3,7 @@ from sqlalchemy import (
     DateTime, ForeignKey, Table)
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.postgres import Base
 
 question_voter = Table(
     'question_voter',

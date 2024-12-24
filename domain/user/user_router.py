@@ -7,7 +7,7 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from starlette import status
 
-from database import get_db
+from db.postgres import get_db
 from domain.user import user_crud, user_schema
 from domain.user.user_crud import pwd_context
 from starlette.config import Config

@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
-from database import get_db
-# from database import get_async_db
+from db.postgres import get_db
 from domain.question import question_schema, question_crud
 from domain.user.user_router import get_current_user
 from models import User

@@ -8,6 +8,7 @@ from domain.answer import answer_router
 from domain.user import user_router
 from domain.chat import chat_router
 from domain.doc import document_router
+from domain.sql import sql_router
 
 app = FastAPI()
 
@@ -34,6 +35,7 @@ app.include_router(answer_router.router)
 app.include_router(user_router.router)
 app.include_router(chat_router.router)
 app.include_router(document_router.router)
+app.include_router(sql_router.router)
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"))
 
 

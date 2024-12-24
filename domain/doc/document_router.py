@@ -9,7 +9,7 @@ from domain.doc.document_tool import (
     MERGED_DB_PATH
 )
 from sqlalchemy.orm import Session
-from database import get_db
+from db.postgres import get_db
 from langchain_openai.embeddings import OpenAIEmbeddings
 
 
